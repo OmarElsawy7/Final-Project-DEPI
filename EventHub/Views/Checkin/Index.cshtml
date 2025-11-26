@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Check In - EventHub";
+}
+@section Keys {
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-controller="Events" asp-action="Index">Events</a></li>
+    <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
+    <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+    <li><a asp-controller="Checkin" asp-action="Index" class="active">Check In</a></li>
+    <li><a href="#" id="logoutBtn">Logout</a></li>
+}
+@section Scripts {
+    <script src="~/assets/js/checkin.js"></script>
+}
+@section QR {
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+}
+<!-- Check-in Section  -->
+<section class="checkin-section">
+    <div class="container">
+        <div class="checkin-header fade-in">
+            <h1>QR Code Check-in</h1>
+            <p>Scan attendee tickets to verify and check them in</p>
+        </div>
+
+        <div class="checkin-container fade-in">
+            <div class="scanner-card">
+                <h2>Scanner</h2>
+                <div id="qr-reader" class="qr-reader"></div>
+                <div class="scanner-controls">
+                    <button id="startScanBtn" class="btn btn-primary">Start Scanner</button>
+                    <button id="stopScanBtn" class="btn btn-secondary" style="display: none;">Stop Scanner</button>
+                </div>
+            </div>
+
+            <div class="scan-result-card">
+                <h2>Scan Result</h2>
+                <div id="scanResult" class="scan-result">
+                    <p class="empty-state">Waiting for scan...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkin-history fade-in">
+            <h2>Recent Check-ins</h2>
+            <div id="checkinHistory" class="checkin-list"></div>
+        </div>
+    </div>
+</section>
