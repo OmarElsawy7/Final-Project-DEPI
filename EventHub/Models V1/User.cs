@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventHub.Models
+namespace EventHub.ModelsV1
 {
     public class User
     {

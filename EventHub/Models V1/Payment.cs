@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EventHub.Models
+namespace EventHub.ModelsV1
 {
     public class Payment
     {
