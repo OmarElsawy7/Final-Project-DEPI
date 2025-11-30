@@ -114,6 +114,9 @@ namespace EventHub.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -329,9 +332,9 @@ namespace EventHub.Migrations
             modelBuilder.Entity("EventHub.Models.Event", b =>
                 {
                     b.HasOne("EventHub.Models.ApplicationUser", "Organizer")
-                        .WithMany()
+                        .WithMany("OrganizedEvents")
                         .HasForeignKey("OrganizerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Organizer");
@@ -340,20 +343,21 @@ namespace EventHub.Migrations
             modelBuilder.Entity("EventHub.Models.Ticket", b =>
                 {
                     b.HasOne("EventHub.Models.ApplicationUser", "Buyer")
-                        .WithMany()
+                        .WithMany("BoughtTickets")
                         .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EventHub.Models.Event", "Event")
                         .WithMany("Tickets")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EventHub.Models.ApplicationUser", "ScannedByUser")
-                        .WithMany()
-                        .HasForeignKey("ScannedByUserId");
+                        .WithMany("ScannedTickets")
+                        .HasForeignKey("ScannedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Buyer");
 
@@ -411,6 +415,15 @@ namespace EventHub.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventHub.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("BoughtTickets");
+
+                    b.Navigation("OrganizedEvents");
+
+                    b.Navigation("ScannedTickets");
                 });
 
             modelBuilder.Entity("EventHub.Models.Event", b =>

@@ -6,16 +6,6 @@ namespace EventHub.Models
     {
         public int Id { get; set; }
 
-        // relation with Event
-        [Required]
-        public int EventId { get; set; }
-        public Event Event { get; set; } = null!;
-
-        // buyer (User)
-        [Required]
-        public string BuyerId { get; set; } = null!;
-        public ApplicationUser Buyer { get; set; } = null!;
-
         //  QR value (Token)
         [Required, StringLength(100)]
         public string QrCodeValue { get; set; } = null!;
@@ -36,6 +26,17 @@ namespace EventHub.Models
         // Check-in data
         public DateTime? CheckInTime { get; set; }
 
+
+        // relation with Event
+        [Required]
+        public int EventId { get; set; }
+        public Event Event { get; set; } = null!;
+
+        // buyer (User)
+        [Required]
+        public string BuyerId { get; set; } = null!;
+        public ApplicationUser Buyer { get; set; } = null!;
+        // scanner (User)
         public string? ScannedByUserId { get; set; }
         public ApplicationUser? ScannedByUser { get; set; }
     }

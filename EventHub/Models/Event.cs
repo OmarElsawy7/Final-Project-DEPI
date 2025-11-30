@@ -29,13 +29,13 @@ namespace EventHub.Models
 
         [Range(0, int.MaxValue)]
         public int AvailableTickets { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsDeleted { get; set; } // Flag for soft delete
 
         // Organizer
         [Required]
         public string OrganizerId { get; set; } = null!;
         public ApplicationUser Organizer { get; set; } = null!;
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
