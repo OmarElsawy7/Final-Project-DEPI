@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Browse Events - EventHub";
+}
+
+<!-- Events Section  -->
+<section class="events-section">
+    <div class="container">
+        <div class="events-header fade-in">
+            <h1>Discover Events</h1>
+            <p>Find your next amazing experience</p>
+        </div>
+
+        <!-- Search and Filter  -->
+        <div class="events-controls fade-in">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search events...">
+            </div>
+            <div class="filter-box">
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="concert">Concert</option>
+                    <option value="conference">Conference</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="sports">Sports</option>
+                    <option value="festival">Festival</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="filter-box">
+                <select id="priceFilter">
+                    <option value="all">All Prices</option>
+                    <option value="free">Free</option>
+                    <option value="0-50">$0 - $50</option>
+                    <option value="50-100">$50 - $100</option>
+                    <option value="100+">$100+</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Events Grid  -->
+        <div id="eventsGrid" class="events-grid"></div>
+    </div>
+</section>
+
+<!-- Purchase Modal                                    (needs review) -->
+<div id="purchaseModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>Purchase Ticket</h2>
+        <div id="modalEventDetails"></div>
+        <form id="purchaseForm">
+            <div class="form-group">
+                <label for="buyerName">Your Name</label>
+                <input type="text" id="buyerName" required placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="buyerEmail">Email</label>
+                <input type="email" id="buyerEmail" required placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label for="ticketQuantity">Number of Tickets</label>
+                <input type="number" id="ticketQuantity" min="1" value="1" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Complete Purchase</button>
+        </form>
+    </div>
+</div>
+
+@section Keys {
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-controller="Event" asp-action="Index">Events</a></li>
+    <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
+    @if (User.IsInRole("Organizer"))
+    {
+        <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+    }
+    <li><a asp-controller="Login" asp-action="Index" class="active">Login</a></li>
+}
+
+@section Scripts {
+    @* <script src="~/assets/js/events.js"></script> *@
+
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const priceFilter = document.getElementById("priceFilter");
+        const eventsGrid = document.getElementById("eventsGrid");
+
+        let searchTimeout;
+
+        async function loadEvents() {
+            const params = new URLSearchParams({
+                search: searchInput.value.trim(),
+                category: categoryFilter.value,
+                priceFilter: priceFilter.value
+            });
+
+            const response = await fetch(`/Event/Filter?${params.toString()}`);
+            const events = await response.json();
+            renderEvents(events);
+        }
+
+        function renderEvents(events) {
+            if (!events || events.length === 0) {
+                eventsGrid.innerHTML = '<p class="empty-state">No events found.</p>';
+                return;
+            }
+
+            eventsGrid.innerHTML = events.map(event => `
+                <div class="event-card slide-up">
+                    <div class="event-card-header">
+                        <span class="event-category-badge">${event.category ?? "Other"}</span>
+                        <span class="event-price">$${event.price.toFixed(2)}</span>
+                    </div>
+
+                    <h3 class="event-card-title">${event.name}</h3>
+
+                    <div class="event-card-details">
+                        <p>📅 ${new Date(event.date).toLocaleDateString()} at ${new Date(event.date).toLocaleTimeString()}</p>
+                        <p>📍 ${event.location}</p>
+                        <p>👤 ${event.organizerName}</p>
+                        <p>🎟️ ${event.availableTickets} tickets left</p>
+                    </div>
+
+                    <p class="event-card-description">${event.description ?? ""}</p>
+
+                    <button class="btn btn-primary btn-full" onclick="openPurchaseModal(${event.id})">
+                        Buy Ticket
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Debounce search
+        searchInput.addEventListener("input", () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(loadEvents, 300);
+        });
+
+        categoryFilter.addEventListener("change", loadEvents);
+        priceFilter.addEventListener("change", loadEvents);
+
+        document.addEventListener("DOMContentLoaded", loadEvents);
+
+        // Opening modal
+        function openPurchaseModal(eventId) {
+            // Here we can later request event details via AJAX
+            const modal = document.getElementById("purchaseModal");
+            modal.style.display = "flex";
+        }
+
+        // Close modal
+        document.querySelector(".modal-close").addEventListener("click", () => {
+            document.getElementById("purchaseModal").style.display = "none";
+        });
+    </script>
+}
+

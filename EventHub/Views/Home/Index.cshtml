@@ -1,12 +1,16 @@
 ﻿@{
     ViewBag.Title = "Home - EventHub";
 }
+
 @section Keys {
-    <li><a asp-controller="Home" asp-action="Index" class="active">Home</a></li>
-    <li><a asp-controller="Events" asp-action="Index">Events</a></li>
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-controller="Event" asp-action="Index">Events</a></li>
     <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
-    <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-    <li><a asp-controller="Login" asp-action="Index">Login</a></li>
+    @if (User.IsInRole("Organizer"))
+    {
+        <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+    }
+    <li><a asp-controller="Login" asp-action="Index" class="active">Login</a></li>
 }
 
 <!-- Hero Section  -->
@@ -16,7 +20,7 @@
             <h1 class="hero-title">Discover Amazing Events Near You</h1>
             <p class="hero-subtitle">Book tickets for concerts, conferences, workshops, and more. Your next unforgettable experience is just a click away.</p>
             <div class="hero-buttons">
-                <a asp-controller="Events" asp-action="index" class="btn btn-primary">Browse Events</a>
+                <a asp-controller="Event" asp-action="index" class="btn btn-primary">Browse Events</a>
                 <a asp-controller="Login" asp-action="index" class="btn btn-secondary">Get Started</a>
             </div>
         </div>
@@ -72,6 +76,6 @@
     <div class="container cta-container fade-in">
         <h2>Ready to Experience Amazing Events?</h2>
         <p>Join thousands of event-goers and organizers on EventHub</p>
-        <a asp-controller="Events" asp-action="index" class="btn btn-primary btn-large">Explore Events Now</a>
+        <a asp-controller="Event" asp-action="index" class="btn btn-primary btn-large" style="border: 1px white solid">Explore Events Now</a>
     </div>
 </section>

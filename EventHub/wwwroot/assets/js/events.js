@@ -1,3 +1,7 @@
+
+/// this script is NOT active
+
+
         let selectedEvent = null;
 
         // Load and display events

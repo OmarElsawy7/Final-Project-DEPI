@@ -11,60 +11,60 @@
             });
         });
 
-        // Login handler
-        document.getElementById('loginFormElement').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const userType = document.getElementById('loginUserType').value;
+        //// Login handler
+        //document.getElementById('loginFormElement').addEventListener('submit', (e) => {
+        //    e.preventDefault();
+        //    const email = document.getElementById('loginEmail').value;
+        //    const password = document.getElementById('loginPassword').value;
+        //    const userType = document.getElementById('loginUserType').value;
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => u.email === email && u.password === password && u.type === userType);
+        //    const users = JSON.parse(localStorage.getItem('users') || '[]');
+        //    const user = users.find(u => u.email === email && u.password === password && u.type === userType);
 
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                alert('Login successful!');
-                if (userType === 'organizer') {
-                    window.location.href = '/Dashboard/index';
-                } else {
-                    window.location.href = '/Events/index';
-                }
-            } else {
-                alert('Invalid credentials. Please try again.');
-            }
-        });
+        //    if (user) {
+        //        localStorage.setItem('currentUser', JSON.stringify(user));
+        //        alert('Login successful!');
+        //        if (userType === 'organizer') {
+        //            window.location.href = '/Dashboard/index';
+        //        } else {
+        //            window.location.href = '/Events/index';
+        //        }
+        //    } else {
+        //        alert('Invalid credentials. Please try again.');
+        //    }
+        //});
 
-        // Register handler
-        document.getElementById('registerFormElement').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const userType = document.getElementById('registerUserType').value;
+        //// Register handler
+        //document.getElementById('registerFormElement').addEventListener('submit', (e) => {
+        //    e.preventDefault();
+        //    const name = document.getElementById('registerName').value;
+        //    const email = document.getElementById('registerEmail').value;
+        //    const password = document.getElementById('registerPassword').value;
+        //    const userType = document.getElementById('registerUserType').value;
 
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
+        //    const users = JSON.parse(localStorage.getItem('users') || '[]');
             
-            if (users.find(u => u.email === email)) {
-                alert('Email already registered!');
-                return;
-            }
+        //    if (users.find(u => u.email === email)) {
+        //        alert('Email already registered!');
+        //        return;
+        //    }
 
-            const newUser = {
-                id: 'U' + Date.now(),
-                name,
-                email,
-                password,
-                type: userType
-            };
+        //    const newUser = {
+        //        id: 'U' + Date.now(),
+        //        name,
+        //        email,
+        //        password,
+        //        type: userType
+        //    };
 
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
+        //    users.push(newUser);
+        //    localStorage.setItem('users', JSON.stringify(users));
+        //    localStorage.setItem('currentUser', JSON.stringify(newUser));
             
-            alert('Registration successful!');
-            if (userType === 'organizer') {
-                window.location.href = '/Dashboard/index';
-            } else {
-                window.location.href = '/Events/index';
-            }
-        });
+        //    alert('Registration successful!');
+        //    if (userType === 'organizer') {
+        //        window.location.href = '/Dashboard/index';
+        //    } else {
+        //        window.location.href = '/Events/index';
+        //    }
+        //});

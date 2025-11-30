@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @RenderSection("QR",required:false)
+    @await RenderSectionAsync("QR", required: false)
 </head>
 <body>
 <!-- Navigation  -->
@@ -19,7 +19,7 @@
             <span class="logo-text">EventHub</span>
         </div>
         <ul class="nav-links">
-                @RenderSection("Keys", required:true)
+                @await RenderSectionAsync("Keys", required: true)
         </ul>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
             <span class="theme-icon">🌙</span>
@@ -36,6 +36,6 @@
 </footer>
     <!-- Scripts  -->
     <script src="~/assets/js/script.js"></script>
-    @RenderSection("Scripts", required:false)
+    @await RenderSectionAsync("Scripts", required:false)
 </body>
 </html>

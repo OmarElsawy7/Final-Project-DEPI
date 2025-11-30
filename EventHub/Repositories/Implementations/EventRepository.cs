@@ -15,6 +15,7 @@ namespace EventHub.Repositories.Implementations
         {
             // Returns events that are not soft-deleted
             return await _context.Events
+                .Include(e => e.Organizer)
                 .Where(e => !e.IsDeleted)
                 .ToListAsync();
         }
