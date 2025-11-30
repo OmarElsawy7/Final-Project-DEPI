@@ -2,7 +2,7 @@
 
 namespace EventHub.Controllers
 {
-    public class Profile : Controller
+    public class DashboardController : Controller
     {
         public IActionResult Index()
         {

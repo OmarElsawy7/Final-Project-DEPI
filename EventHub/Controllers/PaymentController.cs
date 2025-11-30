@@ -2,7 +2,7 @@
 
 namespace EventHub.Controllers
 {
-    public class Payment : Controller
+    public class PaymentController : Controller
     {
         public IActionResult Index()
         {

@@ -1,5 +1,9 @@
 using EventHub.Data;
 using EventHub.Models;
+using EventHub.Repositories.Implementations;
+using EventHub.Repositories.Interfaces;
+using EventHub.Services.Implementations;
+using EventHub.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +19,17 @@ namespace EventHub
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
+            // Generic repository
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            // Specific repositories
+            builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            
+            // Generic service
+            builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
+            // Specific services
+            builder.Services.AddScoped<IEventService, EventService>();
+            builder.Services.AddScoped<ITicketService, TicketService>();
 
             // 2) Identity ApplicationUser + Roles
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -32,7 +47,8 @@ namespace EventHub
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts(); // ??
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection(); // ??
@@ -43,12 +59,8 @@ namespace EventHub
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // 5) Routes
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
             app.MapStaticAssets();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")

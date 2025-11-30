@@ -2,7 +2,7 @@
 
 namespace EventHub.Controllers
 {
-    public class Events : Controller
+    public class CheckinController : Controller
     {
         public IActionResult Index()
         {
