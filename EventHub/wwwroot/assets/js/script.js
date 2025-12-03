@@ -1,6 +1,3 @@
-/// This script is ACTIVE
-
-
 // Theme Management
 function initTheme() {
   const savedTheme = localStorage.getItem("theme") || "light"
@@ -139,6 +136,7 @@ function observeElements() {
 //}
 
 // Utility function to generate unique IDs
-function generateId(prefix) {
-  return prefix + Date.now() + Math.random().toString(36).substr(2, 9)
-}
+
+//function generateId(prefix) {
+//  return prefix + Date.now() + Math.random().toString(36).substr(2, 9)
+//}

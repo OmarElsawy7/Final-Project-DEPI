@@ -2,17 +2,6 @@
     ViewBag.Title = "Home - EventHub";
 }
 
-@section Keys {
-    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-    <li><a asp-controller="Event" asp-action="Index">Events</a></li>
-    <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
-    @if (User.IsInRole("Organizer"))
-    {
-        <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-    }
-    <li><a asp-controller="Login" asp-action="Index" class="active">Login</a></li>
-}
-
 <!-- Hero Section  -->
 <section class="hero">
     <div class="container hero-container">

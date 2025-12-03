@@ -1,15 +1,17 @@
-        // Tab switching
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.dataset.tab;
+// ======================= NOT ACTIVE ===================
+
+        //// Tab switching
+        //document.querySelectorAll('.auth-tab').forEach(tab => {
+        //    tab.addEventListener('click', () => {
+        //        const tabName = tab.dataset.tab;
                 
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.auth-form-container').forEach(f => f.classList.remove('active'));
+        //        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        //        document.querySelectorAll('.auth-form-container').forEach(f => f.classList.remove('active'));
                 
-                tab.classList.add('active');
-                document.getElementById(tabName + 'Form').classList.add('active');
-            });
-        });
+        //        tab.classList.add('active');
+        //        document.getElementById(tabName + 'Form').classList.add('active');
+        //    });
+        //});
 
         //// Login handler
         //document.getElementById('loginFormElement').addEventListener('submit', (e) => {

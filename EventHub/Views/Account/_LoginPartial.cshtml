@@ -1,0 +1,31 @@
+﻿@using EventHub.ViewModels
+@model AuthWrapperViewModel
+
+<div class="auth-form-container @(Model.ActiveTab == "login" ? "active" : "")" id="loginForm">
+    <h2>Welcome Back!</h2>
+    <p class="auth-subtitle">Login to access your account</p>
+    <form asp-controller="Account" asp-action="Login" method="post" class="auth-form">
+        <div class="form-group">
+            <div asp-validation-summary="All" class="txt-error"></div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Login.Email">Email</label>
+            <input asp-for="Login.Email" required placeholder="your@email.com">
+            @* <span asp-validation-for="Login.Email" class="txt-error"></span> *@
+        </div>
+        <div class="form-group">
+            <label asp-for="Login.Password">Password</label>
+            <input asp-for="Login.Password" required placeholder="••••••••">
+            @* <span asp-validation-for="Login.Password" class="txt-error"></span> *@
+        </div>
+        <div class="form-group">
+            <label asp-for="Login.UserType">Login as</label>
+            <select asp-for="Login.UserType" required>
+                <option value="Customer">Customer</option>
+                <option value="Organizer">Event Organizer</option>
+            </select>
+            @* <span asp-validation-for="Login.UserType" class="txt-error"></span> *@
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Login</button>
+    </form>
+</div>

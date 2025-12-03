@@ -19,7 +19,16 @@
             <span class="logo-text">EventHub</span>
         </div>
         <ul class="nav-links">
-                @await RenderSectionAsync("Keys", required: true)
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-controller="Event" asp-action="Index">Events</a></li>
+            <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
+            @if (User.IsInRole("Organizer"))
+            {
+                <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+            }
+            <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+            <li><a asp-controller="Checkin" asp-action="Index">Checkin</a></li>
         </ul>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
             <span class="theme-icon">🌙</span>

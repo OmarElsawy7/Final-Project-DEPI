@@ -1,0 +1,36 @@
+﻿@using EventHub.ViewModels
+@model AuthWrapperViewModel
+
+<div class="auth-form-container @(Model.ActiveTab == "register" ? "active" : "")" id="registerForm">
+    <h2>Create Account</h2>
+    <p class="auth-subtitle">Join EventHub today</p>
+    <form asp-controller="Account" asp-action="Register" method="post" class="auth-form">
+        <div class="form-group">
+            <div asp-validation-summary="All" class="txt-error"></div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Register.FullName">Full Name</label>
+            <input asp-for="Register.FullName" required placeholder="John Doe">
+            @* <span asp-validation-for="Register.FullName" class="txt-error"></span> *@
+        </div>
+        <div class="form-group">
+            <label asp-for="Register.Email">Email</label>
+            <input asp-for="Register.Email" required placeholder="your@email.com">
+            @* <span asp-validation-for="Register.Email" class="txt-error"></span> *@
+        </div>
+        <div class="form-group">
+            <label asp-for="Register.Password">Password</label>
+            <input asp-for="Register.Password" required placeholder="••••••••">
+            @* <span asp-validation-for="Register.Password" class="txt-error"></span> *@
+        </div>
+        <div class="form-group">
+            <label asp-for="Register.UserType">Register as</label>
+            <select asp-for="Register.UserType" required>
+                <option value="Customer">Customer</option>
+                <option value="Organizer">Event Organizer</option>
+            </select>
+            @* <span asp-validation-for="Register.UserType"></span> *@
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+    </form>
+</div>

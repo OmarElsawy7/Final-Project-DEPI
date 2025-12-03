@@ -4,14 +4,19 @@ namespace EventHub.ViewModels
 {
     public class RegisterViewModel
     {
-        public required string FullName { get; set; }
+        [Required]
+        public string FullName { get; set; } = null!;
 
+        [Required]
         [DataType(DataType.EmailAddress)]
-        public required string Email { get; set; }
+        public string Email { get; set; } = null!;
 
+        [Required]
+        [MinLength(4)]
         [DataType(DataType.Password)]
-        public required string Password { get; set; }
+        public string Password { get; set; } = null!;
 
-        public required string UserType { get; set; }
+        [Required]
+        public string UserType { get; set; } = "Customer";
     }
 }

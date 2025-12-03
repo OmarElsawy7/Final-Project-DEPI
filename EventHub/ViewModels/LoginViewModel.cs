@@ -11,6 +11,8 @@ namespace EventHub.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
-        public string UserType { get; set; } = null!;
+        
+        [Required]
+        public string UserType { get; set; } = "Customer";
     }
 }

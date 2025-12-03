@@ -1,5 +1,5 @@
 
-/// this script is NOT active
+/// ================== This script is NOT active =================================
 
 
         let selectedEvent = null;
