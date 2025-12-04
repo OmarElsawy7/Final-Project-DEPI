@@ -2,14 +2,14 @@
         let allUserTickets = [];
         let currentFilter = 'all';
 
-        function checkAuth() {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if (!user) {
-                window.location.href = 'Login/index';
-                return null;
-            }
-            return user;
-        }
+        //function checkAuth() {
+        //    const user = JSON.parse(localStorage.getItem('currentUser'));
+        //    if (!user) {
+        //        window.location.href = 'Login/index';
+        //        return null;
+        //    }
+        //    return user;
+        //}
 
         function loadUserProfile() {
             currentUser = checkAuth();

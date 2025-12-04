@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventHub.Models
+namespace EventHub.ViewModels
 {
-    public class Event
+    public class CreateAndEditEventViewModel
     {
         public int Id { get; set; }
 
@@ -26,18 +26,5 @@ namespace EventHub.Models
 
         [Range(1, int.MaxValue)]
         public int TotalTickets { get; set; }
-
-        [Range(0, int.MaxValue)]
-        public int AvailableTickets { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool IsDeleted { get; set; } = false; // Flag for soft delete
-
-        // Organizer
-        [Required]
-        public string OrganizerId { get; set; } = null!;
-        public ApplicationUser Organizer { get; set; } = null!;
-
-        // Navigation
-        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     }
 }
