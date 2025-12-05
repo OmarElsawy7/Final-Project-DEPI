@@ -40,10 +40,12 @@
                             </div>
                             <div class=""> @* View the btns inline *@
                                 <a class="btn btn-small btn-primary" asp-controller="Dashboard" asp-action="EditEvent" asp-route-id="@item.Id">Edit Event</a>
-                                <form asp-controller="Dashboard" asp-action="DeleteEvent" method="post">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <button type="submit" class="btn btn-small btn-secondary">Delete Event</button>
-                                </form>
+                                
+                                <button type="button"
+                                        class="btn btn-small btn-secondary"
+                                        onclick="openDeleteModal('@item.Id', '@item.Name', '@item.Date', '@item.Location', '@(item.TotalTickets - item.AvailableTickets)')">
+                                    Delete Event
+                                </button>
                             </div>
                         </div>
                     }
@@ -52,3 +54,57 @@
         </div>
     </div>
 </section>
+
+
+@* Confirm Delete Modal *@
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" id="closeDeleteModal">&times;</span>
+        <h2>Delete Event</h2>
+
+        <div id="deleteModalDetails"></div>
+
+        <form id="deleteEventForm" method="post">
+            <input type="hidden" name="id" id="deleteEventId" />
+            <button type="submit" class="btn btn-primary btn-full">Confirm Delete</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Open delete modal
+        function openDeleteModal(id, name, date, location, ticketsSold) {
+
+            document.getElementById("deleteModalDetails").innerHTML = `
+                <div class="modal-event-info">
+                    <h3>${name}</h3>
+                    <p>📅 ${date}</p>
+                    <p>📍 ${location}</p>
+                    <p>🎟️ Tickets Sold: <strong>${ticketsSold}</strong></p>
+                    <p style="color:red;">This action cannot be undone.</p>
+                </div>
+            `;
+
+            document.getElementById("deleteEventId").value = id;
+
+            // Set MVC POST action
+            document.getElementById("deleteEventForm").action = "/Dashboard/DeleteEvent";
+
+            document.getElementById("deleteModal").style.display = "flex";
+        }
+
+        // Close modal button
+        document.getElementById("closeDeleteModal").addEventListener("click", () => {
+            document.getElementById("deleteModal").style.display = "none";
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener("click", (e) => {
+            const modal = document.getElementById("deleteModal");
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+}

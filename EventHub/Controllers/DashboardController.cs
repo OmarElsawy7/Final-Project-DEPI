@@ -76,9 +76,17 @@ namespace EventHub.Controllers
         [HttpGet]
         public async Task<IActionResult> EditEvent(int id)
         {
+            var userId = GetCurrentUserId();
+            if (string.IsNullOrEmpty(userId))
+                return Challenge();
+
             var ev = await _eventService.GetByIdAsync(id);
             if (ev == null || ev.IsDeleted)
                 return NotFound();
+
+            // Ensure current organizer owns this event
+            if (ev.OrganizerId != userId)
+                return Forbid();
 
             var model = new CreateAndEditEventViewModel()
             {
@@ -114,15 +122,21 @@ namespace EventHub.Controllers
             if (ev.OrganizerId != userId)
                 return Forbid();
 
-            var boughtTickets = ev.TotalTickets - ev.AvailableTickets;
-            // edit data 
+            var ticketsSold = ev.TotalTickets - ev.AvailableTickets;
+            if (vm.TotalTickets < ticketsSold)
+            {
+                ModelState.AddModelError(nameof(vm.TotalTickets),
+                    $"Total tickets cannot be less than already sold tickets ({ticketsSold}).");
+                return View(vm);
+            }
+            // Update data 
             ev.Name = vm.Name;
             ev.Date = vm.Date;
             ev.Location = vm.Location;
             ev.Category = vm.Category;
             ev.Price = vm.Price;
             ev.TotalTickets = vm.TotalTickets;
-            ev.AvailableTickets = vm.TotalTickets - boughtTickets;
+            ev.AvailableTickets = vm.TotalTickets - ticketsSold;
             ev.Description = vm.Description;
             await _eventService.UpdateAsync(ev);
 
