@@ -1,3 +1,6 @@
+// ============ THIS SCRIPT IS NOT ACTIVE ===================
+
+
         //// Check if user is logged in as organizer
         //const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
         //if (!currentUser || currentUser.type !== 'organizer') {

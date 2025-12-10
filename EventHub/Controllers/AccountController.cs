@@ -2,6 +2,7 @@
 using EventHub.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EventHub.Controllers
 {
@@ -42,7 +43,8 @@ namespace EventHub.Controllers
 
             var user = new ApplicationUser
             {
-                UserName = model.FullName,
+                FullName = model.FullName,
+                UserName = model.FullName.Split(" ")[0],
                 Email = model.Email
             };
 
@@ -58,8 +60,11 @@ namespace EventHub.Controllers
             }
 
             await _userManager.AddToRoleAsync(user, roleName);
+            // add FullName Claim
+            var claim = new Claim("FullName", user.FullName ?? "");
+            await _userManager.AddClaimAsync(user, claim);
             // sign in
-            await _signInManager.SignInAsync(user, false);
+            await _signInManager.SignInAsync(user, isPersistent: false);
 
             // Redirect by role
             if (model.UserType == "Organizer")

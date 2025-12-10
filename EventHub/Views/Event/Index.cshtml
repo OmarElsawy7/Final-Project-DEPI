@@ -42,21 +42,13 @@
     </div>
 </section>
 
-<!-- Purchase Modal                                    (needs review) -->
+<!-- Purchase Modal -->
 <div id="purchaseModal" class="modal">
     <div class="modal-content">
         <span class="modal-close">&times;</span>
         <h2>Purchase Ticket</h2>
         <div id="modalEventDetails"></div>      <!-- JS will Fill this data -->
         <form id="purchaseForm">
-            <div class="form-group">
-                <label for="buyerName">Your Name</label>
-                <input type="text" id="buyerName" required placeholder="John Doe">
-            </div>
-            <div class="form-group">
-                <label for="buyerEmail">Email</label>
-                <input type="email" id="buyerEmail" required placeholder="your@email.com">
-            </div>
             <div class="form-group">
                 <label for="ticketQuantity">Number of Tickets</label>
                 <input type="number" id="ticketQuantity" min="1" value="1" required>
@@ -67,6 +59,139 @@
 </div>
 
 @section Scripts {
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const priceFilter = document.getElementById("priceFilter");
+        const eventsGrid = document.getElementById("eventsGrid");
+
+        const purchaseModal = document.getElementById("purchaseModal");
+        const modalClose = document.querySelector(".modal-close");
+        const modalEventDetails = document.getElementById("modalEventDetails");
+        const purchaseForm = document.getElementById("purchaseForm");
+        const ticketQuantityInput = document.getElementById("ticketQuantity");
+
+        let searchTimeout;
+        let eventsCache = [];
+        let selectedEventId = null;
+
+        async function loadEvents() {
+            const params = new URLSearchParams({
+                search: searchInput.value.trim(),
+                category: categoryFilter.value,
+                priceFilter: priceFilter.value
+            });
+
+            const response = await fetch(`/Event/Filter?${params.toString()}`);
+            const events = await response.json();
+
+            eventsCache = events; // cache for modal use
+            renderEvents(events);
+        }
+
+        function renderEvents(events) {
+            if (!events || events.length === 0) {
+                eventsGrid.innerHTML = '<p class="empty-state">No events found.</p>';
+                return;
+            }
+
+            eventsGrid.innerHTML = events.map(event => `
+                <div class="event-card slide-up">
+                    <div class="event-card-header">
+                        <span class="event-category-badge">${event.category ?? "Other"}</span>
+                        <span class="event-price">$${event.price.toFixed(2)}</span>
+                    </div>
+
+                    <h3 class="event-card-title">${event.name}</h3>
+
+                    <div class="event-card-details">
+                        <p>📅 ${new Date(event.date).toLocaleDateString()} at ${new Date(event.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                        <p>📍 ${event.location}</p>
+                        <p>👤 ${event.organizerName}</p>
+                        <p>🎟️ ${event.availableTickets} tickets left</p>
+                    </div>
+
+                    <p class="event-card-description">${event.description ?? ""}</p>
+
+                    <button class="btn btn-primary btn-full" onclick="openPurchaseModal(${event.id})">
+                        Buy Ticket
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Debounce search
+        searchInput.addEventListener("input", () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(loadEvents, 300);
+        });
+
+        categoryFilter.addEventListener("change", loadEvents);
+        priceFilter.addEventListener("change", loadEvents);
+
+        document.addEventListener("DOMContentLoaded", loadEvents);
+
+        // ============= PURCHASE MODAL LOGIC =============
+
+        window.openPurchaseModal = function (eventId) {
+            const ev = eventsCache.find(e => e.id === eventId);
+            if (!ev) return;
+
+            selectedEventId = eventId;
+
+            modalEventDetails.innerHTML = `
+                <div class="modal-event-info">
+                    <h3>${ev.name}</h3>
+                    <p>📅 ${new Date(ev.date).toLocaleString()}</p>
+                    <p>📍 ${ev.location}</p>
+                    <p>💰 $${ev.price.toFixed(2)} per ticket</p>
+                    <p>🎟️ ${ev.availableTickets} tickets available</p>
+                </div>
+            `;
+
+            ticketQuantityInput.value = 1;
+            ticketQuantityInput.max = ev.availableTickets;
+
+            purchaseModal.style.display = "flex";
+        }
+
+        // Close modal
+        modalClose.addEventListener("click", () => {
+            purchaseModal.style.display = "none";
+        });
+
+        window.addEventListener("click", (e) => {
+            if (e.target === purchaseModal) {
+                purchaseModal.style.display = "none";
+            }
+        });
+
+        // Handle purchase submit
+        purchaseForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (selectedEventId === null) return;
+
+            const quantity = parseInt(ticketQuantityInput.value);
+
+            if (isNaN(quantity) || quantity < 1) {
+                alert("Please select a valid quantity.");
+                return;
+            }
+
+            const maxQty = parseInt(ticketQuantityInput.max);
+            if (quantity > maxQty) {
+                alert(`Only ${maxQty} tickets are available.`);
+                return;
+            }
+
+            // Redirect to PaymentController/Purchase (GET)
+            window.location.href = `/Payment/Purchase?eventId=${selectedEventId}&quantity=${quantity}`;
+        });
+    </script>
+}
+
+
+@* @section Scripts {
     <script>
         const searchInput = document.getElementById("searchInput");
         const categoryFilter = document.getElementById("categoryFilter");
@@ -142,5 +267,5 @@
         });
 
     </script>
-}
+} *@
 

@@ -1,0 +1,71 @@
+﻿@using EventHub.ViewModels
+@model TicketDisplayViewModel
+
+@{
+    ViewBag.Title = "Ticket Details - EventHub";
+}
+
+<!-- Ticket Details Section -->
+<section class="tickets-section">
+    <div class="container">
+        <div class="tickets-header fade-in">
+            <h1>Your Ticket</h1>
+            <p>Show the QR code at the event entrance</p>
+        </div>
+
+        <div class="tickets-container">
+			<div class="ticket-card fade-in">
+				<!-- Header -->
+				<div class="ticket-header">
+					<h2>@Model.EventName</h2>
+					<!-- Status Badge -->
+					<span class="ticket-status @(Model.IsUsed ? "used" : "valid")">
+						@(Model.IsUsed ? "Used" : "Valid")
+					</span>
+				</div>
+				<!-- Left Details -->
+				<div class="ticket-details">
+					<div class="ticket-info">
+						<p><strong>Ticket ID:</strong> #@Model.TicketId</p>
+						<p><strong>Holder:</strong> @ViewBag.FullName</p>
+						<p><strong>Date:</strong> @Model.EventDate.ToString("dd/MM/yyyy, hh:mm tt")</p>
+						<p><strong>Location:</strong> @Model.EventLocation</p>
+						<p><strong>Price:</strong> $@Model.Price.ToString("F2")</p>
+						<p><strong>Purchased:</strong> @Model.PurchaseDate.ToString("dd/MM/yyyy, hh:mm tt")</p>
+					</div>
+					<!-- QR Code -->
+					<div class="ticket-qr">
+						<div id="qrImage" class="qr-code"></div>
+						<p class="qr-label">Scan at entrance</p>
+					</div>
+				</div>
+				<!-- Footer -->
+				<div class="ticket-footer">
+					<button class="btn btn-primary btn-small" onclick="window.print()">Print</button>
+					<button class="btn btn-secondary btn-small" onclick="downloadTicket()">Download</button>
+				</div>
+			</div>
+        </div>
+    </div>
+</section>
+
+@section QR {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+}
+
+@section Scripts {
+    <script>
+        // Generate QR FROM Model.QrCodeValue
+        const qrData = "@Model.QrCodeValue";
+
+        new QRCode(document.getElementById("qrImage"), {
+            text: qrData,
+            width: 200,
+            height: 200
+        });
+
+        function downloadTicket() {
+            alert("Downloading will export ticket as PDF later");
+        }
+    </script>
+}

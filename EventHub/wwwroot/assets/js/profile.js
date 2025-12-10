@@ -1,3 +1,5 @@
+// =================== NOT ACTIVE ===========================
+
         let currentUser = null;
         let allUserTickets = [];
         let currentFilter = 'all';
@@ -11,33 +13,33 @@
         //    return user;
         //}
 
-        function loadUserProfile() {
-            currentUser = checkAuth();
-            if (!currentUser) return;
+        //function loadUserProfile() {
+        //    currentUser = checkAuth();
+        //    if (!currentUser) return;
 
-            // Display user info
-            document.getElementById('userName').textContent = currentUser.name || currentUser.email;
-            document.getElementById('userEmail').textContent = currentUser.email;
-            document.getElementById('userType').textContent = currentUser.type === 'organizer' ? 'Event Organizer' : 'Customer';
+        //    // Display user info
+        //    document.getElementById('userName').textContent = currentUser.name || currentUser.email;
+        //    document.getElementById('userEmail').textContent = currentUser.email;
+        //    document.getElementById('userType').textContent = currentUser.type === 'organizer' ? 'Event Organizer' : 'Customer';
             
-            if (currentUser.profilePhoto) {
-                document.getElementById('userProfilePhoto').src = currentUser.profilePhoto;
-                document.getElementById('userProfilePhoto').style.display = 'block';
-                document.getElementById('userInitials').style.display = 'none';
-            }
+        //    if (currentUser.profilePhoto) {
+        //        document.getElementById('userProfilePhoto').src = currentUser.profilePhoto;
+        //        document.getElementById('userProfilePhoto').style.display = 'block';
+        //        document.getElementById('userInitials').style.display = 'none';
+        //    }
             
-            // Set initials
-            const initials = (currentUser.name || currentUser.email)
-                .split(' ')
-                .map(n => n[0])
-                .join('')
-                .toUpperCase()
-                .substring(0, 2);
-            document.getElementById('userInitials').textContent = initials;
+        //    // Set initials
+        //    const initials = (currentUser.name || currentUser.email)
+        //        .split(' ')
+        //        .map(n => n[0])
+        //        .join('')
+        //        .toUpperCase()
+        //        .substring(0, 2);
+        //    document.getElementById('userInitials').textContent = initials;
 
-            // Load user's tickets
-            loadUserTickets();
-        }
+        //    // Load user's tickets
+        //    loadUserTickets();
+        //}
 
         function loadUserTickets() {
             const allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
@@ -164,45 +166,45 @@
             alert('Download functionality: This would generate a PDF of your ticket.');
         }
 
-        function openEditProfileModal() {
-            document.getElementById('editName').value = currentUser.name || '';
-            document.getElementById('editEmail').value = currentUser.email || '';
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
+        //function openEditProfileModal() {
+        //    document.getElementById('editName').value = currentUser.name || '';
+        //    document.getElementById('editEmail').value = currentUser.email || '';
+        //    document.getElementById('editProfileModal').style.display = 'flex';
+        //}
 
-        function closeEditProfileModal() {
-            document.getElementById('editProfileModal').style.display = 'none';
-        }
+        //function closeEditProfileModal() {
+        //    document.getElementById('editProfileModal').style.display = 'none';
+        //}
 
-        function saveProfileChanges(e) {
-            e.preventDefault();
+        //function saveProfileChanges(e) {
+        //    e.preventDefault();
             
-            const newName = document.getElementById('editName').value;
-            const newEmail = document.getElementById('editEmail').value;
-            const photoInput = document.getElementById('profilePhotoInput');
+        //    const newName = document.getElementById('editName').value;
+        //    const newEmail = document.getElementById('editEmail').value;
+        //    const photoInput = document.getElementById('profilePhotoInput');
 
-            // Update user data
-            currentUser.name = newName;
-            currentUser.email = newEmail;
+        //    // Update user data
+        //    currentUser.name = newName;
+        //    currentUser.email = newEmail;
 
-            // Handle photo upload
-            if (photoInput.files && photoInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    currentUser.profilePhoto = event.target.result;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    loadUserProfile();
-                    closeEditProfileModal();
-                    alert('Profile updated successfully!');
-                };
-                reader.readAsDataURL(photoInput.files[0]);
-            } else {
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                loadUserProfile();
-                closeEditProfileModal();
-                alert('Profile updated successfully!');
-            }
-        }
+        //    // Handle photo upload
+        //    if (photoInput.files && photoInput.files[0]) {
+        //        const reader = new FileReader();
+        //        reader.onload = function(event) {
+        //            currentUser.profilePhoto = event.target.result;
+        //            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        //            loadUserProfile();
+        //            closeEditProfileModal();
+        //            alert('Profile updated successfully!');
+        //        };
+        //        reader.readAsDataURL(photoInput.files[0]);
+        //    } else {
+        //        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        //        loadUserProfile();
+        //        closeEditProfileModal();
+        //        alert('Profile updated successfully!');
+        //    }
+        //}
 
         // Filter functionality
         document.addEventListener('DOMContentLoaded', () => {

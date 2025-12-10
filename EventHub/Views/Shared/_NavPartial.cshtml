@@ -1,0 +1,39 @@
+﻿<nav class="navbar">
+    <div class="container nav-container">
+        <div class="logo">
+            <span class="logo-icon">🎫</span>
+            <span class="logo-text">EventHub</span>
+        </div>
+
+        <ul class="nav-links">
+            <!-- Visible to everyone -->
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-controller="Event" asp-action="Index">Events</a></li>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <!-- Guest -->
+                <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+            }
+            else
+            {
+                <!-- Authenticated User (both User + Organizer) -->
+                <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
+
+                @if (User.IsInRole("Organizer"))
+                {
+                    <!-- Organizer-only -->
+                    <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                    <li><a asp-controller="CheckIn" asp-action="Index">Check In</a></li>
+                }
+
+                <!-- Logout for any signed-in user -->
+                <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+            }
+        </ul>
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <span class="theme-icon">🌙</span>
+        </button>
+    </div>
+</nav>

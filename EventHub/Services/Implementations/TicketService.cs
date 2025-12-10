@@ -1,6 +1,7 @@
 ﻿using EventHub.Models;
 using EventHub.Repositories.Interfaces;
 using EventHub.Services.Interfaces;
+using EventHub.ViewModels;
 
 namespace EventHub.Services.Implementations
 {
@@ -20,6 +21,16 @@ namespace EventHub.Services.Implementations
         public async Task<IEnumerable<Ticket>> GetUserTicketsAsync(string userId)
         {
             return await _ticketRepo.GetUserTicketsAsync(userId);
+        }
+
+        public async Task<Ticket?> GetTicketWithEventAsync(int id)
+        {
+            return await _ticketRepo.GetTicketWithEventAsync(id);
+        }
+
+        public async Task<IEnumerable<CheckInHistoryViewModel>> GetCheckInHistoryAsync(string scannerId)
+        {
+            return await _ticketRepo.GetCheckInHistoryAsync(scannerId);
         }
     }
 }

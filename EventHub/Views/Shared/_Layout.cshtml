@@ -11,38 +11,18 @@
     @await RenderSectionAsync("QR", required: false)
 </head>
 <body>
-<!-- Navigation  -->
-<nav class="navbar">
-    <div class="container nav-container">
-        <div class="logo">
-            <span class="logo-icon">🎫</span>
-            <span class="logo-text">EventHub</span>
-        </div>
-        <ul class="nav-links">
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="Event" asp-action="Index">Events</a></li>
-            <li><a asp-controller="Profile" asp-action="Index">Profile</a></li>
-            @if (User.IsInRole("Organizer"))
-            {
-                <li><a asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-            }
-            <li><a asp-controller="Account" asp-action="Login">Login</a></li>
-            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
-            <li><a asp-controller="Checkin" asp-action="Index">Checkin</a></li>
-        </ul>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-            <span class="theme-icon">🌙</span>
-        </button>
-    </div>
-</nav>
-        @RenderBody()
+    <!-- Navigation  -->
+    <partial name="_NavPartial" />
+        
+    @RenderBody()
 
-<!-- Footer  -->
-<footer class="footer">
-    <div class="container">
-        <p>&copy; 2025 EventHub. All rights reserved.</p>
-    </div>
-</footer>
+    <!-- Footer  -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 EventHub. All rights reserved.</p>
+        </div>
+    </footer>
+
     <!-- Scripts  -->
     <script src="~/assets/js/script.js"></script>
     @await RenderSectionAsync("Scripts", required:false)

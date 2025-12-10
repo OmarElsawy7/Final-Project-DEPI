@@ -2,13 +2,6 @@
     ViewBag.Title = "Check In - EventHub";
 }
 
-@section Scripts {
-    <script src="~/assets/js/checkin.js"></script>
-}
-@section QR {
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-}
-<!-- Check-in Section  -->
 <section class="checkin-section">
     <div class="container">
         <div class="checkin-header fade-in">
@@ -20,9 +13,10 @@
             <div class="scanner-card">
                 <h2>Scanner</h2>
                 <div id="qr-reader" class="qr-reader"></div>
+
                 <div class="scanner-controls">
                     <button id="startScanBtn" class="btn btn-primary">Start Scanner</button>
-                    <button id="stopScanBtn" class="btn btn-secondary" style="display: none;">Stop Scanner</button>
+                    <button id="stopScanBtn" class="btn btn-secondary" style="display:none;">Stop Scanner</button>
                 </div>
             </div>
 
@@ -36,7 +30,279 @@
 
         <div class="checkin-history fade-in">
             <h2>Recent Check-ins</h2>
-            <div id="checkinHistory" class="checkin-list"></div>
+            <div id="checkinHistory" class="checkin-list">
+                <p class="empty-state">Loading...</p>
+            </div>
         </div>
     </div>
 </section>
+
+
+@section QR {
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+}
+
+@section Scripts {
+    <script>
+        let html5QrCode = null;
+        let isScanning = false;
+        let canScan = true;
+
+        let startBtn, stopBtn, scanResult, historyDiv;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            startBtn = document.getElementById('startScanBtn');
+            stopBtn = document.getElementById('stopScanBtn');
+            scanResult = document.getElementById('scanResult');
+            historyDiv = document.getElementById('checkinHistory');
+
+            startBtn.addEventListener('click', startScanner);
+            stopBtn.addEventListener('click', stopScanner);
+
+            loadHistory();
+        });
+
+        // -----------------------------
+        // START SCANNER
+        // -----------------------------
+        function startScanner() {
+            if (isScanning) return;
+
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("qr-reader");
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 230, height: 230 } },
+                onScanSuccess,
+                () => { }
+            )
+            .then(() => {
+                isScanning = true;
+                startBtn.style.display = "none";
+                stopBtn.style.display = "block";
+                showWaiting();
+            })
+            .catch(err => {
+                alert("Camera unavailable. Check permissions.");
+                console.error(err);
+            });
+        }
+
+        // -----------------------------
+        // STOP SCANNER
+        // -----------------------------
+        function stopScanner() {
+            if (!isScanning || !html5QrCode) return;
+
+            html5QrCode.stop()
+                .then(() => {
+                    html5QrCode.clear();
+                    isScanning = false;
+                    startBtn.style.display = "block";
+                    stopBtn.style.display = "none";
+                })
+                .catch(err => console.error(err));
+        }
+
+        // -----------------------------
+        // ON SUCCESSFUL SCAN
+        // -----------------------------
+        function onScanSuccess(decodedText) {
+            if (!canScan) return;
+
+            canScan = false;
+            setTimeout(() => canScan = true, 5000);
+
+            const qrToken = decodedText.trim();
+            if (!qrToken) {
+                showScanResult("Invalid QR code", "error");
+                return;
+            }
+
+            verifyTicket(qrToken);
+        }
+
+        // -----------------------------
+        // CALL BACKEND
+        // -----------------------------
+        async function verifyTicket(qrToken) {
+            showScanResult("Checking ticket...", "loading");
+
+            const form = new URLSearchParams();
+            form.append("qrToken", qrToken);
+
+            try {
+                const res = await fetch("/CheckIn/Verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: form.toString()
+                });
+
+                if (!res.ok) {
+                    showScanResult("Server error while checking ticket", "error");
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (data.success) {
+                    const ticketData = {
+                        ticketId: data.ticketId,
+                        eventName: data.eventName,
+                        holderName: data.holder,
+                        price: data.price,
+                        eventDate: formatDateTime(data.eventDate)
+                    };
+
+                    showScanResult("Valid ticket! Check-in successful", "success", ticketData);
+                    prependHistoryEntry(data);
+                } else {
+                    if (data.status === "alreadyUsed") {
+                        const ticketData = {
+                            ticketId: data.ticketId,
+                            eventName: data.eventName,
+                            holderName: data.holder,
+                            price: data.price,
+                            eventDate: formatDateTime(data.eventDate)
+                        };
+
+                        showScanResult(data.message || "Ticket already checked-in", "error", ticketData);
+                    } else {
+                        showScanResult(data.message || "Ticket invalid", "error");
+                    }
+                }
+
+                await loadHistory();
+            } catch (err) {
+                console.error(err);
+                showScanResult("Network error while checking ticket", "error");
+            }
+        }
+
+        // -----------------------------
+        // RESULT UI
+        // -----------------------------
+        function showWaiting() {
+            showScanResult("Waiting for scan...", "loading");
+        }
+
+        function showScanResult(message, type, data = null) {
+            let html = `<div class="scan-result-${type}">
+                <div class="scan-result-icon">${
+                    type === 'success' ? '✅' :
+                    type === 'error'   ? '❌' :
+                    '⏳'
+                }</div>
+                <h3>${message}</h3>`;
+
+            if (data) {
+                html += `
+                    <div class="scan-result-details">
+                        <p><strong>Ticket ID:</strong> ${data.ticketId}</p>
+                        <p><strong>Event:</strong> ${data.eventName}</p>
+                        <p><strong>Holder:</strong> ${data.holderName}</p>
+                        <p><strong>Price:</strong> $${Number(data.price).toFixed(2)}</p>
+                        <p><strong>Event Date:</strong> ${data.eventDate}</p>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            scanResult.innerHTML = html;
+
+            if (type === 'success')      playSound(true);
+            else if (type === 'error')   playSound(false);
+        }
+
+        // -----------------------------
+        // LOAD HISTORY
+        // -----------------------------
+        async function loadHistory() {
+            try {
+                const res = await fetch("/CheckIn/History");
+                if (!res.ok) {
+                    historyDiv.innerHTML = `<p class="empty-state">Failed to load history</p>`;
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (!data || data.length === 0) {
+                    historyDiv.innerHTML = `<p class="empty-state">No check-ins yet</p>`;
+                    return;
+                }
+
+                historyDiv.innerHTML = data.map(h => {
+                    const dateText = formatDateTime(h.checkedInAt);
+                    return `
+                        <div class="checkin-item">
+                            <div class="checkin-item-header">
+                                <h4>${h.eventName}</h4>
+                                <span class="checkin-time">${dateText}</span>
+                            </div>
+                            <div class="checkin-item-details">
+                                <p><strong>Holder:</strong> ${h.holder}</p>
+                                <p><strong>Ticket:</strong> #${h.ticketId}</p>
+                                <p><strong>Price:</strong> $${h.price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            } catch (err) {
+                console.error(err);
+                historyDiv.innerHTML = `<p class="empty-state">Error loading history</p>`;
+            }
+        }
+
+        function prependHistoryEntry(data) {
+            const node = document.createElement("div");
+            node.classList.add("checkin-item");
+
+            const dateText = formatDateTime(data.checkedInAt);
+
+            node.innerHTML = `
+                <div class="checkin-item-header">
+                    <h4>${data.eventName}</h4>
+                    <span class="checkin-time">${dateText}</span>
+                </div>
+                <div class="checkin-item-details">
+                    <p><strong>Holder:</strong> ${data.holder}</p>
+                    <p><strong>Ticket:</strong> #${data.ticketId}</p>
+                    <p><strong>Price:</strong> $${data.price.toFixed(2)}</p>
+                </div>
+            `;
+
+            historyDiv.prepend(node);
+        }
+
+        // -----------------------------
+        // SOUND EFFECTS
+        // -----------------------------
+        function playSound(success) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.frequency.value = success ? 800 : 300;
+            gain.gain.value = 0.2;
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.25);
+        }
+
+        // -----------------------------
+        // DATE HELPER (UTC -2h)
+        // -----------------------------
+        function formatDateTime(raw) {
+            const d = new Date(raw);
+            if (isNaN(d.getTime())) return raw;
+
+            return d.toLocaleString();
+        }
+    </script>
+}

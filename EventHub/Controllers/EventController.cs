@@ -66,7 +66,7 @@ namespace EventHub.Controllers
                     Date = e.Date,
                     Location = e.Location,
                     Description = e.Description,
-                    OrganizerName = e.Organizer.UserName ?? "Organizer",
+                    OrganizerName = e.Organizer.FullName ?? "Organizer",
                     AvailableTickets = e.AvailableTickets
                 })
                 .ToList();

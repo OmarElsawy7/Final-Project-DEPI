@@ -1,3 +1,6 @@
+// ============ THIS SCRIPT IS NOT ACTIVE ===================
+
+
 let html5QrCode = null;
 let isScanning = false;
 

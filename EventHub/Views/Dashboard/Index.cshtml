@@ -8,7 +8,7 @@
 <section class="dashboard-section">
     <div class="container">
         <div class="dashboard-header fade-in">
-            <h1>@(User?.Identity?.Name)'s Dashboard</h1>
+            <h1>@(ViewBag.FullName)'s Dashboard</h1>
 
             <div class="hero-buttons">
 				<a asp-controller="Dashboard" asp-action="CreateEvent" class="btn btn-primary">Create New Event</a>

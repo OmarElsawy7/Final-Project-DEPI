@@ -33,6 +33,8 @@ namespace EventHub.Controllers
             var events = await _eventService
                 .FindAsync(e => e.OrganizerId == userId && !e.IsDeleted);
 
+            ViewBag.FullName = User.FindFirst("FullName")?.Value;
+
             return View(events.ToList()); // or use view model
         }
 

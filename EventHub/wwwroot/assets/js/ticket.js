@@ -1,3 +1,5 @@
+// =================== NOT ACTIVE ===========================
+
 function loadTickets() {
     const lastPurchasedTickets = JSON.parse(localStorage.getItem('lastPurchasedTickets') || '[]');
     const allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
